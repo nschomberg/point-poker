@@ -51,6 +51,7 @@ const config = {
           fallback: 'style-loader',
           use: [
             'css-loader',
+            'postcss-loader',
             {
               loader: 'sass-loader',
               options: {
