@@ -2,17 +2,23 @@ const { resolve } = require('path');
 
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin'); // eslint-disable-line
 
 const config = {
   devtool: 'source-map',
 
-  entry: [
-    './index.js',
-    './styles/main.scss',
-  ],
+  entry: {
+    main: './index.js',
+    baseStyles: './styles/main.scss',
+    // Chunk pages
+    home: './components/Home/index.js',
+    join: './components/Join/index.js',
+    auth: './components/Auth/index.js',
+    room: './components/room/index.js',
+  },
 
   output: {
-    filename: 'bundle.js',
+    filename: '[name].js',
     path: resolve(__dirname, 'public'),
     publicPath: '/',
   },
@@ -58,11 +64,22 @@ const config = {
   },
 
   plugins: [
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'commons',
+      filename: 'commons.js',
+    }),
     new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify('production') } }),
     new webpack.optimize.UglifyJsPlugin({ compress: { warnings: true } }),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new CopyWebpackPlugin([{ from: 'build', to: '' }]),
+    new CompressionPlugin({
+      asset: '[path].gz[query]',
+      algorithm: 'gzip',
+      test: /\.(js|html)$/,
+      threshold: 10240,
+      minRatio: 0.8,
+    }),
   ],
 };
 

@@ -1,6 +1,6 @@
 // Import React and React-dom.
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 import Routes from './Routes';
 
@@ -11,8 +11,8 @@ import Worker from './serviceWorker';
 const root = document.querySelector('main');
 
 // Append the DummyComponent to the root element.
-const render = (Component) => {
-  ReactDOM.render(
+const renderAppContainer = (Component) => {
+  render(
     <AppContainer>
       <Component />
     </AppContainer>,
@@ -29,6 +29,6 @@ render(Routes);
 if (module.hot) {
   module.hot.accept('./Routes', () => {
     const NextRoot = require('./Routes').default; //eslint-disable-line
-    render(NextRoot);
+    renderAppContainer(NextRoot);
   });
 }

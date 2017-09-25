@@ -48,7 +48,16 @@ app.get('/style.css', (req, res) => {
 });
 
 app.get('/bundle.js', (req, res) => {
-  res.sendFile(__dirname + '/bundle.js');
+  if (isProduction) {
+    res.set('Content-Encoding', 'gzip');
+    res.sendFile(__dirname + '/bundle.js.gz');
+  } else {
+    res.sendFile(__dirname + '/bundle.js');
+  }
+});
+
+app.get('/commons.js', (req, res) => {
+  res.sendFile(__dirname + '/commons.js');
 });
 
 app.get('/*', sendPage);
@@ -57,6 +66,6 @@ app.get('/:room/', sendPage);
 app.get('/:room/:user', sendPage);
 */
 
-http.listen(port, function () {
-  console.log('listening on *:' + port);
+http.listen(port, () => {
+  console.log(`Listening on port ${port}`);
 });

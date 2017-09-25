@@ -8,15 +8,21 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const config = {
   devtool: 'inline-source-map',
 
-  entry: [
-    'react-hot-loader/patch',
-    'webpack-hot-middleware/client',
-    './index.js',
-    './styles/main.scss',
-  ],
+  entry: {
+    // Chunk pages
+    home: './components/Home/index.js',
+    join: './components/Join/index.js',
+    auth: './components/Auth/index.js',
+    room: './components/room/index.js',
+    // Other entries
+    hotLoader: 'react-hot-loader/patch',
+    hotMiddleWare: 'webpack-hot-middleware/client',
+    bundle: './index.js',
+    baseStyles: './styles/main.scss',
+  },
 
   output: {
-    filename: 'bundle.js',
+    filename: '[name].js',
     path: resolve(__dirname, 'public'),
     publicPath: '/',
   },
@@ -74,6 +80,10 @@ const config = {
   },
 
   plugins: [
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'commons',
+      filename: 'commons.js',
+    }),
     new webpack.LoaderOptionsPlugin({
       test: /\.js$/,
       options: {
