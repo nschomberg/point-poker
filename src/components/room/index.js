@@ -70,6 +70,11 @@ export default class Room extends React.Component {
       });
     });
 
+    this.socket.on('reaction', (data) => {
+      console.dir('react!'); // eslint-disable-line
+      console.dir(data); // eslint-disable-line
+    });
+
     this.saveUsername();
   }
 
@@ -97,6 +102,10 @@ export default class Room extends React.Component {
     this.socket.emit('reset', true);
   }
 
+  onReact(reaction) {
+    this.socket.emit('reaction', reaction);
+  }
+
   getSocket() {
     return this.socket;
   }
@@ -112,6 +121,7 @@ export default class Room extends React.Component {
         isRevealed={this.state.isRevealed}
         onClickReveal={() => this.onClickReveal()}
         onClickNext={() => this.onClickNext()}
+        onReact={reaction => this.onReact(reaction)}
         isAdmin={this.state.isAdmin}
         loading={!this.state.disconnected && !this.state.connected}
         />

@@ -1,12 +1,18 @@
-'use strict';
-
 const port = 4200;
 
 const io = require('socket.io').listen(port);
 const ioClient = require('socket.io-client');
 const socket = require('../lib/socket');
-const chai = require('chai')
+const gifs = require('../lib/gifs');
+const chai = require('chai');
+const sinon = require('sinon');
 const _ = require('lodash');
+const mockGiphyResponse = require('./mockGiphyResponse');
+
+const mockedGetSticker = () => new Promise((resolve) => {
+  resolve(mockGiphyResponse);
+});
+sinon.stub(gifs, 'getSticker', mockedGetSticker);
 
 const expect = chai.expect;
 chai.should();
@@ -173,29 +179,7 @@ describe('Server', () => {
       }).catch((e) => { console.dir(e) });
     });
 
-    it('should reset room on reset', () => {
-      const client1 = createClient();
-      const client2 = createClient();
-      const client3 = createClient();
-
-      Promise.all([
-        authenticate(client1, 'room A', 'user 1'),
-        authenticate(client2, 'room A', 'user 2'),
-        authenticate(client3, 'room B', 'user 3'),
-      ]).then(() => {
-        setTimeout(() => {
-          client1.emit('reset');
-
-          setTimeout(() => {
-            expect(getRoom('Room A').to.be.empty);
-            expect(getRoom('Room B').to.not.be.empty);
-            done();
-          }, 100);
-        }, 100);
-      });
-    });
-
-    it('should register data on vote', () => {
+    it('should register data on vote', (done) => {
       const client1 = createClient();
       const client2 = createClient();
       const client3 = createClient();
@@ -206,19 +190,75 @@ describe('Server', () => {
         authenticate(client3, 'room A', 'user 3'),
       ]).then(() => {
         setTimeout(() => {
-          client1.vote('bim');
-          client2.vote('bam');
-          client3.vote('boom');
+          client1.emit('vote', 'bim');
+          client2.emit('vote', 'bam');
+          client3.emit('vote', 'boom');
 
           setTimeout(() => {
-            expect(getVote('Room A', client1.id).to.equal('bim'));
-            expect(getVote('Room A', client2.id).to.equal('bam'));
-            expect(getVote('Room A', client3.id).to.equal('boom'));
+            expect(getVote('room A', client1.id)).to.equal('bim');
+            expect(getVote('room A', client2.id)).to.equal('bam');
+            expect(getVote('room A', client3.id)).to.equal('boom');
             done();
           }, 100);
         }, 100);
       });
     });
 
+    it('should clear data on reset', (done) => {
+      const client1 = createClient();
+      const client2 = createClient();
+      const client3 = createClient();
+
+      Promise.all([
+        authenticate(client1, 'room A', 'user 1'),
+        authenticate(client2, 'room A', 'user 2'),
+        authenticate(client3, 'room B', 'user 3'),
+      ]).then(() => {
+        setTimeout(() => {
+          client1.emit('vote', 'bim');
+          client2.emit('vote', 'bam');
+          client3.emit('vote', 'boom');
+
+          setTimeout(() => {
+            client1.emit('reset');
+
+            setTimeout(() => {
+              expect(getVote('room A', client1.id)).to.be.null;
+              expect(getVote('room A', client2.id)).to.be.null;
+              expect(getVote('room B', client3.id)).to.not.be.null;
+
+              done();
+            }, 100);
+          }, 100);
+        }, 100);
+      });
+    });
+
+    it('should emit reaction on reaction', (done) => {
+      const client1 = createClient();
+      const client2 = createClient();
+
+      let reactionData;
+
+      client2.on('reaction', (reaction) => {
+        reactionData = reaction;
+      });
+
+      Promise.all([
+        authenticate(client1, 'room A', 'user 1'),
+        authenticate(client2, 'room A', 'user 2'),
+      ]).then(() => {
+        setTimeout(() => {
+          client1.emit('reaction', 'wtf');
+
+          setTimeout(() => {
+            expect(reactionData.from).to.equal(client1.id);
+            expect(reactionData.sticker.url).to.not.be.empty;
+            expect(reactionData.sticker.embed_url).to.not.be.empty;
+            done();
+          }, 100);
+        }, 100);
+      });
+    });
   });
 });

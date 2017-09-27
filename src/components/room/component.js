@@ -16,7 +16,11 @@ const RoomContainer = (props) => {
     isRevealed,
     onClickReveal,
     onClickNext,
+    onReact,
     isAdmin } = props;
+
+    // for debugging. TODO - remove
+    window.onReact = onReact; // eslint-disable-line
   return (
     <View className="Room app__view">
       {connected &&
