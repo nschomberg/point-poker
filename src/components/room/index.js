@@ -2,8 +2,9 @@ import React from 'react';
 import io from 'socket.io-client';
 
 import RoomContainer from './component';
-import { LOCAL_STORAGE_KEYS } from '../../utils/constants';
+import { LOCAL_STORAGE_KEYS, REACTION_TIMEOUT } from '../../utils/constants';
 import './_room.scss';
+
 
 export default class Room extends React.Component {
   constructor(props) {
@@ -16,6 +17,7 @@ export default class Room extends React.Component {
       connected: false,
       disconnected: false,
       isRevealed: false,
+      reactions: [],
     };
 
     this.socket = io('/');
@@ -70,9 +72,26 @@ export default class Room extends React.Component {
       });
     });
 
-    this.socket.on('reaction', (data) => {
-      console.dir('react!'); // eslint-disable-line
-      console.dir(data); // eslint-disable-line
+    this.socket.on('reaction', (reaction) => {
+      console.dir('reaction !'); // eslint-disable-line
+      console.dir(reaction); // eslint-disable-line
+      console.dir(this.state.votes); // eslint-disable-line
+      this.setState({
+        reactions: [...this.state.reactions, reaction],
+      }, () => {
+        setTimeout(
+          () => {
+            const [reactionToRemove, ...reactions] = this.state.reactions; // eslint-disable-line
+            this.setState({
+              reactions,
+            });
+
+            console.dir('reaction removed'); // eslint-disable-line
+            console.dir(this.state.reactions); // eslint-disable-line
+          }, REACTION_TIMEOUT);
+      });
+      console.dir('reaction added'); // eslint-disable-line
+      console.dir(this.state.reactions); // eslint-disable-line
     });
 
     this.saveUsername();
