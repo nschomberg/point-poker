@@ -7,7 +7,11 @@ import Home from './components/Home';
 import Auth from './components/Auth';
 import About from './components/about';
 import Contact from './components/contact';
+<<<<<<< HEAD
 import Room from './components/room';
+=======
+import Room from './components/Room';
+>>>>>>> yeti/master
 import Join from './components/Join';
 
 const Routes = () => (

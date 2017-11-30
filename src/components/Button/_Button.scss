@@ -15,11 +15,11 @@
   @include clickable;
   @include center;
   transition: background $transition-duration-fast ease-in-out,
-  box-shadow $transition-duration-fast ease-in-out;
+    box-shadow $transition-duration-fast ease-in-out;
   outline: none;
 
   &:hover {
-    box-shadow: 0 0 0.5em $tile-active-shadow-color;
+    box-shadow: 0 0 0.5em $bg-color;
   }
 
   &:active, &:focus {

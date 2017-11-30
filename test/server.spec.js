@@ -1,3 +1,5 @@
+'use strict';
+
 const port = 4200;
 
 const io = require('socket.io').listen(port);
@@ -179,32 +181,7 @@ describe('Server', () => {
       }).catch((e) => { console.dir(e) });
     });
 
-    it('should register data on vote', (done) => {
-      const client1 = createClient();
-      const client2 = createClient();
-      const client3 = createClient();
-
-      Promise.all([
-        authenticate(client1, 'room A', 'user 1'),
-        authenticate(client2, 'room A', 'user 2'),
-        authenticate(client3, 'room A', 'user 3'),
-      ]).then(() => {
-        setTimeout(() => {
-          client1.emit('vote', 'bim');
-          client2.emit('vote', 'bam');
-          client3.emit('vote', 'boom');
-
-          setTimeout(() => {
-            expect(getVote('room A', client1.id)).to.equal('bim');
-            expect(getVote('room A', client2.id)).to.equal('bam');
-            expect(getVote('room A', client3.id)).to.equal('boom');
-            done();
-          }, 100);
-        }, 100);
-      });
-    });
-
-    it('should clear data on reset', (done) => {
+    it('should reset room on reset', () => {
       const client1 = createClient();
       const client2 = createClient();
       const client3 = createClient();
@@ -215,46 +192,36 @@ describe('Server', () => {
         authenticate(client3, 'room B', 'user 3'),
       ]).then(() => {
         setTimeout(() => {
-          client1.emit('vote', 'bim');
-          client2.emit('vote', 'bam');
-          client3.emit('vote', 'boom');
+          client1.emit('reset');
 
           setTimeout(() => {
-            client1.emit('reset');
-
-            setTimeout(() => {
-              expect(getVote('room A', client1.id)).to.be.null;
-              expect(getVote('room A', client2.id)).to.be.null;
-              expect(getVote('room B', client3.id)).to.not.be.null;
-
-              done();
-            }, 100);
+            expect(getRoom('Room A').to.be.empty);
+            expect(getRoom('Room B').to.not.be.empty);
+            done();
           }, 100);
         }, 100);
       });
     });
 
-    it('should emit reaction on reaction', (done) => {
+    it('should register data on vote', () => {
       const client1 = createClient();
       const client2 = createClient();
-
-      let reactionData;
-
-      client2.on('reaction', (reaction) => {
-        reactionData = reaction;
-      });
+      const client3 = createClient();
 
       Promise.all([
         authenticate(client1, 'room A', 'user 1'),
         authenticate(client2, 'room A', 'user 2'),
+        authenticate(client3, 'room A', 'user 3'),
       ]).then(() => {
         setTimeout(() => {
-          client1.emit('reaction', 'wtf');
+          client1.vote('bim');
+          client2.vote('bam');
+          client3.vote('boom');
 
           setTimeout(() => {
-            expect(reactionData.from).to.equal(client1.id);
-            expect(reactionData.sticker.url).to.not.be.empty;
-            expect(reactionData.sticker.embed_url).to.not.be.empty;
+            expect(getVote('Room A', client1.id).to.equal('bim'));
+            expect(getVote('Room A', client2.id).to.equal('bam'));
+            expect(getVote('Room A', client3.id).to.equal('boom'));
             done();
           }, 100);
         }, 100);
