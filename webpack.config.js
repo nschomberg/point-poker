@@ -1,10 +1,12 @@
+// Load env vars
+require('dotenv').config();
+
 const { resolve } = require('path');
 
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const OpenBrowserPlugin = require('open-browser-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-
 
 const port = process.env.PORT || 4200;
 
@@ -83,6 +85,7 @@ const config = {
   },
 
   plugins: [
+    new webpack.EnvironmentPlugin(['GA_TRACKING_ID', 'DEBUG']),
     new webpack.LoaderOptionsPlugin({
       test: /\.js$/,
       options: {

@@ -1,3 +1,6 @@
+// Load env vars
+require('dotenv').config();
+
 const { resolve } = require('path');
 
 const webpack = require('webpack');
@@ -61,8 +64,10 @@ const config = {
   },
 
   plugins: [
+    new webpack.EnvironmentPlugin(['GA_TRACKING_ID', 'DEBUG']),
+    new webpack.EnvironmentPlugin(['GA_TRACKING_ID']),
     new webpack.DefinePlugin({ 'process.env': { NODE_ENV: JSON.stringify('production') } }),
-    new UglifyJS({ sourceMap: true}),
+    new UglifyJS({ sourceMap: true }),
     new webpack.optimize.ModuleConcatenationPlugin(),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new CopyWebpackPlugin([{ from: 'build', to: '' }]),
