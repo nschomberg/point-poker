@@ -13,7 +13,6 @@ const webpack = require('webpack');
 // Relative imports
 const webpackConfig = require('./webpack.config.js');
 const { isProduction, log } = require('./lib/utils');
-// const { trackPageView } = require('./lib/tracking');
 
 const app = express();
 

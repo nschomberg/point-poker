@@ -5,7 +5,7 @@ const { resolve } = require('path');
 
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin; // eslint-disable-line no-unused-vars
 const CompressionPlugin = require('compression-webpack-plugin');
 const UglifyJS = require('uglifyjs-webpack-plugin');
 
