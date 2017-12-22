@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { sample } from 'utils';
 import Form from 'components/Form';
 import View from 'components/View';
+import BackButton from 'components/BackButton';
 import { LOCAL_STORAGE_KEYS } from 'utils/constants';
 import './_Auth.scss';
 
@@ -45,17 +46,24 @@ export default class Auth extends React.Component {
   render() {
     return (
       <View className="Auth">
-        <Form
-          className="Auth__Form"
-          onSubmit={name => this.navigate(name)}
-          onBack={browserHistory.goBack}
-          backLabel="Back"
-          placeholderCode
-          submitLabel="Enter"
-          placeholder={this.placeholderName}
-          label={this.title}
-          value={window.localStorage.getItem(LOCAL_STORAGE_KEYS.USERNAME) || ''}
-        />
+        <div className="Auth__Content">
+          <BackButton className="Form__BackButton" />
+          <label
+            className="Auth__Label"
+            htmlFor="code"
+          >
+            {this.title}
+          </label>
+          <Form
+            className="Auth__Form"
+            onSubmit={name => this.navigate(name)}
+            onBack={browserHistory.goBack}
+            placeholderCode
+            submitLabel="Enter"
+            placeholder={this.placeholderName}
+            value={window.localStorage.getItem(LOCAL_STORAGE_KEYS.USERNAME) || ''}
+          />
+        </div>
       </View>
     );
   }

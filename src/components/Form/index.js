@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import classwrap from 'classwrap';
 
 import Button from 'components/Button';
-import BackButton from 'components/BackButton';
 import './_Form.scss';
 
 class Form extends Component {
@@ -52,7 +51,6 @@ class Form extends Component {
   render() {
     const {
       className,
-      label,
       submitLabel,
       placeholder,
     } = this.props;
@@ -74,13 +72,6 @@ class Form extends Component {
           onSubmit={ e => this.handleSubmit(e) }
           onKeyDown={ e => this.handleKeyDown(e) }
         >
-          <BackButton className="Form__BackButton" />
-          <label
-            className="Form__Label"
-            htmlFor="code"
-          >
-            {label}
-          </label>
           <div className="Form__InputGroup">
             <input
               className="Form__Input"

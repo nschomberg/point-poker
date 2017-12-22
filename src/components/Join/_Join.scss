@@ -1,8 +1,6 @@
 @import 'main';
 
 .Join {
-  //padding-top: calc(4rem + 30vh);
-  //padding-bottom: 10vh;
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -10,5 +8,85 @@
   display: flex;
   justify-content: center;
   align-content: center;
-  flex-direction: column;
+  position: relative;
+
+  &__Layout {
+    height: 100%;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__BackButton {
+    align-self: flex-start;
+  }
+
+
+  &__Title {
+    font-family: Mallory-Book;
+    font-size: 2rem;
+    text-align: center;
+    letter-spacing: 0.08rem;
+
+    @include media("<tablet") {
+      // font-size: 2rem;
+    }
+  }
+
+  &__Heading {
+    font-family: Mallory-Book;
+    font-size: 1.25rem;
+    letter-spacing: 0.08rem;
+    white-space: nowrap;
+
+    @include media("<tablet") {
+      font-size: 1.25rem;
+    }
+  }
+
+  &__Options {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    @include media("<tablet") {
+      flex-direction: column;
+    }
+  }
+
+  &__Option {
+    font-family: Mallory-Light;
+    height: 10rem;
+    width: 15rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &--New {}
+
+    &--Existing {}
+
+    &--Or {
+      @include center;
+      font-family: Mallory-Bold;
+      font-size: 1.5rem;
+    }
+  }
+
+  &__OptionContent {
+    @include center;
+    height: 100%;
+    width: 100%;
+  }
+
+  .Form__Input {
+    // margin-left: 1rem;
+    width: 15rem;
+    font-size: 1.3rem;
+    padding-bottom: 1rem;
+  }
 }
